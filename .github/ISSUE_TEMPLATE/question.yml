@@ -1,0 +1,63 @@
+name: ❓ Question
+description: Ask a question about using Commit Coach
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for asking a question! Please provide as much detail as possible.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What would you like to know?
+      placeholder: Ask your question here...
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide any relevant context about your question
+      placeholder: |
+        - What are you trying to achieve?
+        - What have you tried so far?
+        - Any specific use case or scenario?
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Please provide details about your environment
+      placeholder: |
+        - OS: [e.g. Ubuntu 22.04, macOS 13.0, Windows 11]
+        - Node.js version: [e.g. 18.17.0]
+        - Commit Coach version: [e.g. 1.0.0]
+        - Repository type: [e.g. public, private, enterprise]
+
+  - type: textarea
+    id: commit-coach-config
+    attributes:
+      label: Commit Coach Configuration
+      description: If applicable, please share your `.commit-coach.yml` configuration (remove any sensitive information)
+      placeholder: |
+        ```yaml
+        # Your commit-coach.yml content here
+        ```
+      render: yaml
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+        - label: I have checked the documentation
+          required: true
+        - label: I have provided all the requested information
+          required: true

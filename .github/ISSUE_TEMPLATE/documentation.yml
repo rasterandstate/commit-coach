@@ -1,0 +1,94 @@
+name: 📚 Documentation
+description: Suggest improvements to documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting documentation improvements! Clear documentation helps everyone.
+
+  - type: textarea
+    id: doc-area
+    attributes:
+      label: Documentation Area
+      description: Which part of the documentation needs improvement?
+      placeholder: |
+        - README.md
+        - CONTRIBUTING.md
+        - API documentation
+        - Configuration examples
+        - Usage examples
+        - Troubleshooting guide
+        - Other: [specify]
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-docs
+    attributes:
+      label: Current Documentation
+      description: What does the current documentation say? (if applicable)
+      placeholder: Copy the current text or provide a link to the section...
+
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+      placeholder: Describe what should be added, changed, or clarified...
+    validations:
+      required: true
+
+  - type: textarea
+    id: why-improvement
+    attributes:
+      label: Why This Improvement?
+      description: Why is this documentation improvement needed?
+      placeholder: |
+        - Is something unclear or confusing?
+        - Is there missing information?
+        - Would this help new users?
+        - Does this address a common question?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-content
+    attributes:
+      label: Proposed Content
+      description: If you have specific content suggestions, please provide them here
+      placeholder: |
+        ```markdown
+        # Your proposed documentation content here
+        ```
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Type of Documentation
+      description: What type of documentation improvement is this?
+      options:
+        - New documentation
+        - Clarification/rewrite
+        - Missing information
+        - Outdated information
+        - Better examples
+        - Better formatting
+        - Translation
+        - Other
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided all the requested information
+          required: true
+        - label: I am willing to help implement this documentation improvement
+          required: false

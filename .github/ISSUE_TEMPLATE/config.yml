@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: GitHub Community Support
+    url: https://github.com/rasterandstate/commit-coach/discussions
+    about: Please ask and answer questions here.
+  - name: Documentation
+    url: https://github.com/rasterandstate/commit-coach#readme
+    about: Check the documentation for usage examples and configuration options.
