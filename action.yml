@@ -3,7 +3,7 @@ description: 'An intelligent commit analysis tool that provides insights and coa
 author: 'Stephen Way'
 branding:
   icon: 'eye'
-  color: 'blue'
+  color: 'white'
 
 inputs:
   github-token:
