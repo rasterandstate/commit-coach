@@ -29,5 +29,5 @@ inputs:
     default: 'true'
 
 runs:
-  using: 'node20'
-  main: 'dist/action.js'
+  using: 'node24'
+  main: 'dist/action.cjs'
