@@ -82,6 +82,17 @@ integrations:
 - **Commit Quality**: Flags large commits and short messages
 - **Breaking Changes**: Detects potential breaking changes
 
+📖 **[Complete Rules Documentation](docs/RULES.md)** - Learn how to create custom rules and configure all available options.
+
+📋 **[Configuration Examples](docs/EXAMPLES.md)** - See practical examples for different project types and team workflows.
+
+## Documentation
+
+- 📚 **[Documentation Index](docs/README.md)** - Complete documentation overview
+- 📖 **[Rules Reference](docs/RULES.md)** - All available variables, conditions, and examples
+- 📋 **[Configuration Examples](docs/EXAMPLES.md)** - Project-specific configurations
+- 🚀 **[Usage Examples](examples/USAGE.md)** - Command-line usage and CI/CD integration
+
 ## Action Inputs
 
 | Input | Description | Required | Default |
