@@ -76,7 +76,24 @@ integrations:
 
 ## Built-in Rules
 
+### 🔒 Security Rules
+- **Hardcoded Secrets**: Detects API keys, tokens, and credentials
+- **SQL Injection**: Identifies potential SQL injection vulnerabilities
+- **XSS Prevention**: Warns about unsafe DOM manipulation
+
+### 🧪 Code Quality Rules
 - **Test Coverage**: Warns when source files lack tests
+- **Debug Code**: Detects console.log, debugger statements
+- **Error Handling**: Flags async functions without try/catch
+- **TypeScript Safety**: Warns about 'any' type usage
+
+### 📝 Workflow Rules
+- **Merge Conflicts**: Detects unresolved conflict markers
+- **Large Files**: Warns about large file additions
+- **Dependencies**: Alerts on package updates
+- **Configuration**: Flags config file changes
+
+### 🔄 API & Documentation Rules
 - **Public API Changes**: Detects API removals and new APIs
 - **Documentation**: Suggests updating docs for new features
 - **Commit Quality**: Flags large commits and short messages

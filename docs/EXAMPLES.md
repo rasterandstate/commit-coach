@@ -452,11 +452,17 @@ integrations:
 ```yaml
 # .commit-coach.yml
 rules:
-  # Security patterns
+  # Built-in security rules (automatically enabled)
+  - id: hardcoded-secrets
+    enabled: true
+    severity: error
+    conditions: ["diff.match(/['\"](sk-|pk_|ghp_|gho_|ghu_|ghs_|ghr_|AKIA|ya29\.)/)"]
+    message: "Potential hardcoded secret detected - use environment variables"
+
   - id: sql-injection-risk
     enabled: true
     severity: error
-    conditions: ["diff.match(/query.*\\$\\{.*\\}/)"]
+    conditions: ["diff.match(/query.*\\$\\{.*\\}|query.*\\+.*\\+/)"]
     message: "Potential SQL injection risk - use parameterized queries"
 
   - id: xss-risk
@@ -465,17 +471,18 @@ rules:
     conditions: ["diff.includes('innerHTML') && !diff.includes('textContent')"]
     message: "Potential XSS risk - use textContent instead of innerHTML"
 
-  - id: hardcoded-secrets
-    enabled: true
-    severity: error
-    conditions: ["diff.match(/['\"](sk-|pk_|ghp_|gho_|ghu_|ghs_|ghr_)/)"]
-    message: "Potential hardcoded secret detected - use environment variables"
-
+  # Additional security rules
   - id: crypto-usage
     enabled: true
     severity: warning
     conditions: ["diff.includes('crypto') || diff.includes('hash')"]
     message: "Cryptographic code changed - review security implications"
+
+  - id: debug-code
+    enabled: true
+    severity: warning
+    conditions: ["diff.includes('console.log') || diff.includes('debugger')"]
+    message: "Debug code detected - remove before merging"
 
 output:
   format: status-check

@@ -184,14 +184,88 @@ Commit Coach comes with several built-in rules that you can enable/disable:
   message: "Breaking changes detected - update version and changelog"
 ```
 
+### Security Rules
+
+```yaml
+- id: hardcoded-secrets
+  enabled: true
+  severity: error
+  conditions: ["diff.match(/['\"](sk-|pk_|ghp_|gho_|ghu_|ghs_|ghr_|AKIA|ya29\.)/)"]
+  message: "Potential hardcoded secret detected - use environment variables instead"
+
+- id: sql-injection-risk
+  enabled: true
+  severity: error
+  conditions: ["diff.match(/query.*\\$\\{.*\\}|query.*\\+.*\\+/)"]
+  message: "Potential SQL injection risk detected - use parameterized queries"
+
+- id: xss-risk
+  enabled: true
+  severity: error
+  conditions: ["diff.includes('innerHTML') && !diff.includes('textContent')"]
+  message: "Potential XSS risk - use textContent instead of innerHTML"
+```
+
 ### Code Quality Rules
 
 ```yaml
+- id: debug-code
+  enabled: true
+  severity: warning
+  conditions: ["diff.includes('console.log') || diff.includes('debugger') || diff.includes('alert(')"]
+  message: "Debug code detected - remove before merging"
+
+- id: large-file-addition
+  enabled: true
+  severity: warning
+  conditions: ["files.some(f => f.status === 'added' && f.additions > 1000)"]
+  message: "Large file(s) added - consider if these should be in version control"
+
+- id: dependency-update
+  enabled: true
+  severity: info
+  conditions: ["files.some(f => f.path.includes('package.json') || f.path.includes('yarn.lock') || f.path.includes('pnpm-lock.yaml'))"]
+  message: "Dependencies updated - run tests and check for breaking changes"
+
+- id: missing-error-handling
+  enabled: true
+  severity: warning
+  conditions: ["diff.includes('async ') && !diff.includes('try') && !diff.includes('catch')"]
+  message: "Async function added without error handling - consider try/catch blocks"
+
+- id: typescript-any-type
+  enabled: true
+  severity: warning
+  conditions: ["files.some(f => f.path.endsWith('.ts')) && diff.includes(': any')"]
+  message: "Avoid using 'any' type - use specific types for better type safety"
+
 - id: todo-comments
   enabled: true
   severity: info
   conditions: ["hasTodos"]
   message: "TODO/FIXME comments found - track these items"
+```
+
+### Workflow Rules
+
+```yaml
+- id: merge-conflict-markers
+  enabled: true
+  severity: error
+  conditions: ["diff.includes('<<<<<<<') || diff.includes('>>>>>>>') || diff.includes('=======')"]
+  message: "Merge conflict markers detected - resolve conflicts before committing"
+
+- id: binary-file-addition
+  enabled: true
+  severity: warning
+  conditions: ["files.some(f => f.status === 'added' && /\.(jpg|jpeg|png|gif|pdf|zip|exe|dll|bin|so|dylib)$/i.test(f.path))"]
+  message: "Binary file(s) added - ensure they're necessary and properly sized"
+
+- id: config-file-changes
+  enabled: true
+  severity: info
+  conditions: ["files.some(f => f.path.includes('config') || f.path.includes('.env') || f.path.includes('settings'))"]
+  message: "Configuration files changed - verify all environments are updated"
 ```
 
 ## Custom Rule Examples

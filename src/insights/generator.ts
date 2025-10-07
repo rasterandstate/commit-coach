@@ -294,6 +294,218 @@ export class InsightGenerator {
       });
     }
 
+    // Security and quality checks
+    insights.push(...this.generateSecurityInsights(commit));
+    insights.push(...this.generateQualityInsights(commit));
+    insights.push(...this.generateWorkflowInsights(commit));
+
+    return insights;
+  }
+
+  private generateSecurityInsights(commit: CommitInfo): Insight[] {
+    const insights: Insight[] = [];
+
+    // Check for hardcoded secrets
+    const secretPatterns = [
+      /['"](sk-|pk_|ghp_|gho_|ghu_|ghs_|ghr_|AKIA|ya29\.)/,
+      /['"]([A-Za-z0-9+/]{40,})['"]/, // Base64-like strings
+    ];
+
+    for (const pattern of secretPatterns) {
+      if (pattern.test(commit.diff)) {
+        insights.push({
+          id: 'hardcoded-secrets',
+          type: 'error',
+          title: 'Potential Hardcoded Secret',
+          message: 'Potential hardcoded secret detected - use environment variables instead',
+          confidence: 0.8,
+          metadata: {
+            pattern: pattern.toString(),
+          },
+        });
+        break; // Only show one secret warning per commit
+      }
+    }
+
+    // Check for SQL injection risks
+    if (/query.*\$\{.*\}|query.*\+.*\+/.test(commit.diff)) {
+      insights.push({
+        id: 'sql-injection-risk',
+        type: 'error',
+        title: 'Potential SQL Injection Risk',
+        message: 'Potential SQL injection risk detected - use parameterized queries',
+        confidence: 0.7,
+        metadata: {
+          riskType: 'sql-injection',
+        },
+      });
+    }
+
+    // Check for XSS risks
+    if (commit.diff.includes('innerHTML') && !commit.diff.includes('textContent')) {
+      insights.push({
+        id: 'xss-risk',
+        type: 'error',
+        title: 'Potential XSS Risk',
+        message: 'Potential XSS risk - use textContent instead of innerHTML',
+        confidence: 0.6,
+        metadata: {
+          riskType: 'xss',
+        },
+      });
+    }
+
+    return insights;
+  }
+
+  private generateQualityInsights(commit: CommitInfo): Insight[] {
+    const insights: Insight[] = [];
+
+    // Check for debug code
+    const debugPatterns = ['console.log', 'debugger', 'alert(', 'print('];
+    const hasDebugCode = debugPatterns.some(pattern => commit.diff.includes(pattern));
+    
+    if (hasDebugCode) {
+      insights.push({
+        id: 'debug-code',
+        type: 'warning',
+        title: 'Debug Code Detected',
+        message: 'Debug code detected - remove before merging',
+        confidence: 0.9,
+        metadata: {
+          debugPatterns: debugPatterns.filter(pattern => commit.diff.includes(pattern)),
+        },
+      });
+    }
+
+    // Check for large file additions
+    const largeFiles = commit.files.filter(
+      file => file.status === 'added' && file.additions > 1000
+    );
+    if (largeFiles.length > 0) {
+      insights.push({
+        id: 'large-file-addition',
+        type: 'warning',
+        title: 'Large File Added',
+        message: `Large file(s) added (${largeFiles.map(f => f.path).join(', ')}) - consider if these should be in version control`,
+        confidence: 0.8,
+        metadata: {
+          largeFiles: largeFiles.map(f => ({ path: f.path, size: f.additions })),
+        },
+      });
+    }
+
+    // Check for dependency updates
+    const dependencyFiles = commit.files.filter(file =>
+      file.path.includes('package.json') ||
+      file.path.includes('yarn.lock') ||
+      file.path.includes('pnpm-lock.yaml') ||
+      file.path.includes('requirements.txt') ||
+      file.path.includes('go.mod')
+    );
+    if (dependencyFiles.length > 0) {
+      insights.push({
+        id: 'dependency-update',
+        type: 'info',
+        title: 'Dependencies Updated',
+        message: 'Dependencies updated - run tests and check for breaking changes',
+        confidence: 0.9,
+        metadata: {
+          dependencyFiles: dependencyFiles.map(f => f.path),
+        },
+      });
+    }
+
+    // Check for missing error handling in async functions
+    if (commit.diff.includes('async ') && !commit.diff.includes('try') && !commit.diff.includes('catch')) {
+      insights.push({
+        id: 'missing-error-handling',
+        type: 'warning',
+        title: 'Missing Error Handling',
+        message: 'Async function added without error handling - consider try/catch blocks',
+        confidence: 0.6,
+        metadata: {
+          issueType: 'error-handling',
+        },
+      });
+    }
+
+    // Check for TypeScript any type usage
+    if (commit.files.some(f => f.path.endsWith('.ts')) && commit.diff.includes(': any')) {
+      insights.push({
+        id: 'typescript-any-type',
+        type: 'warning',
+        title: 'TypeScript Any Type Usage',
+        message: "Avoid using 'any' type - use specific types for better type safety",
+        confidence: 0.7,
+        metadata: {
+          language: 'typescript',
+        },
+      });
+    }
+
+    return insights;
+  }
+
+  private generateWorkflowInsights(commit: CommitInfo): Insight[] {
+    const insights: Insight[] = [];
+
+    // Check for merge conflict markers
+    const conflictMarkers = ['<<<<<<<', '>>>>>>>', '======='];
+    const hasConflictMarkers = conflictMarkers.some(marker => commit.diff.includes(marker));
+    
+    if (hasConflictMarkers) {
+      insights.push({
+        id: 'merge-conflict-markers',
+        type: 'error',
+        title: 'Merge Conflict Markers',
+        message: 'Merge conflict markers detected - resolve conflicts before committing',
+        confidence: 1.0,
+        metadata: {
+          conflictMarkers: conflictMarkers.filter(marker => commit.diff.includes(marker)),
+        },
+      });
+    }
+
+    // Check for binary file additions
+    const binaryExtensions = /\.(jpg|jpeg|png|gif|pdf|zip|exe|dll|bin|so|dylib)$/i;
+    const binaryFiles = commit.files.filter(
+      file => file.status === 'added' && binaryExtensions.test(file.path)
+    );
+    if (binaryFiles.length > 0) {
+      insights.push({
+        id: 'binary-file-addition',
+        type: 'warning',
+        title: 'Binary Files Added',
+        message: `Binary file(s) added (${binaryFiles.map(f => f.path).join(', ')}) - ensure they're necessary and properly sized`,
+        confidence: 0.8,
+        metadata: {
+          binaryFiles: binaryFiles.map(f => f.path),
+        },
+      });
+    }
+
+    // Check for configuration file changes
+    const configFiles = commit.files.filter(file =>
+      file.path.includes('config') ||
+      file.path.includes('.env') ||
+      file.path.includes('settings') ||
+      file.path.includes('docker-compose') ||
+      file.path.includes('Dockerfile')
+    );
+    if (configFiles.length > 0) {
+      insights.push({
+        id: 'config-file-changes',
+        type: 'info',
+        title: 'Configuration Files Changed',
+        message: 'Configuration files changed - verify all environments are updated',
+        confidence: 0.8,
+        metadata: {
+          configFiles: configFiles.map(f => f.path),
+        },
+      });
+    }
+
     return insights;
   }
 
