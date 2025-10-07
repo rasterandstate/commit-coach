@@ -10,7 +10,8 @@ async function main() {
   const commitHash = process.env.INPUT_COMMIT_HASH;
   const prNumber = process.env.INPUT_PR_NUMBER;
   const comment = process.env.INPUT_COMMENT !== 'false';
-  const statusCheck = process.env.INPUT_STATUS_CHECK !== 'false';
+  // Handle both possible environment variable names for status-check
+  const statusCheck = (process.env.INPUT_STATUS_CHECK || process.env['INPUT_STATUS-CHECK']) !== 'false';
 
   console.log('Debug - Input values:');
   console.log('INPUT_COMMENT:', process.env.INPUT_COMMENT);
