@@ -1,7 +1,7 @@
 name: ❓ Question
 description: Ask a question about using Commit Coach
-title: "[Question]: "
-labels: ["question", "needs-triage"]
+title: '[Question]: '
+labels: ['question', 'needs-triage']
 body:
   - type: markdown
     attributes:

@@ -140,27 +140,27 @@ describe('GitHubIntegration', () => {
       const resultWithErrors = {
         ...mockResult,
         insights: [
-        {
-          id: 'error1',
-          type: 'error' as const,
-          title: 'Error 1',
-          message: 'Error message',
-          confidence: 0.9,
-        },
-        {
-          id: 'error2',
-          type: 'error' as const,
-          title: 'Error 2',
-          message: 'Error message',
-          confidence: 0.8,
-        },
-        {
-          id: 'warning',
-          type: 'warning' as const,
-          title: 'Warning',
-          message: 'Warning message',
-          confidence: 0.7,
-        },
+          {
+            id: 'error1',
+            type: 'error' as const,
+            title: 'Error 1',
+            message: 'Error message',
+            confidence: 0.9,
+          },
+          {
+            id: 'error2',
+            type: 'error' as const,
+            title: 'Error 2',
+            message: 'Error message',
+            confidence: 0.8,
+          },
+          {
+            id: 'warning',
+            type: 'warning' as const,
+            title: 'Warning',
+            message: 'Warning message',
+            confidence: 0.7,
+          },
         ],
       };
 
@@ -185,20 +185,20 @@ describe('GitHubIntegration', () => {
       const resultWithWarnings = {
         ...mockResult,
         insights: [
-        {
-          id: 'warning1',
-          type: 'warning' as const,
-          title: 'Warning 1',
-          message: 'Warning message',
-          confidence: 0.8,
-        },
-        {
-          id: 'warning2',
-          type: 'warning' as const,
-          title: 'Warning 2',
-          message: 'Warning message',
-          confidence: 0.7,
-        },
+          {
+            id: 'warning1',
+            type: 'warning' as const,
+            title: 'Warning 1',
+            message: 'Warning message',
+            confidence: 0.8,
+          },
+          {
+            id: 'warning2',
+            type: 'warning' as const,
+            title: 'Warning 2',
+            message: 'Warning message',
+            confidence: 0.7,
+          },
         ],
       };
 

@@ -54,22 +54,24 @@ export class ConfigLoader {
     }
   }
 
-  private static mergeWithDefaults(userConfig: Record<string, unknown>): CoachConfig {
+  private static mergeWithDefaults(
+    userConfig: Record<string, unknown>
+  ): CoachConfig {
     const defaultConfig = this.getDefaultConfig();
 
     return {
       rules: (userConfig.rules as RuleConfig[]) || defaultConfig.rules,
-      output: { 
-        ...defaultConfig.output, 
-        ...(userConfig.output as Partial<OutputConfig> || {}) 
+      output: {
+        ...defaultConfig.output,
+        ...((userConfig.output as Partial<OutputConfig>) || {}),
       },
       integrations: {
         ...defaultConfig.integrations,
-        ...(userConfig.integrations as Partial<IntegrationConfig> || {}),
+        ...((userConfig.integrations as Partial<IntegrationConfig>) || {}),
       },
-      thresholds: { 
-        ...defaultConfig.thresholds, 
-        ...(userConfig.thresholds as Partial<ThresholdConfig> || {}) 
+      thresholds: {
+        ...defaultConfig.thresholds,
+        ...((userConfig.thresholds as Partial<ThresholdConfig>) || {}),
       },
     };
   }

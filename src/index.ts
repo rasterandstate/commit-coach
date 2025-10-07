@@ -208,7 +208,9 @@ function createFormatter(format: string, config: CoachConfig, options: any) {
 
 function extractGitHubOwner(_commitInfo: any): string {
   try {
-    const remoteUrl = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const remoteUrl = execSync('git remote get-url origin', {
+      encoding: 'utf8',
+    }).trim();
     const match = remoteUrl.match(/github\.com[:/]([^/]+)/);
     return match ? match[1] : 'unknown';
   } catch {
@@ -218,7 +220,9 @@ function extractGitHubOwner(_commitInfo: any): string {
 
 function extractGitHubRepo(_commitInfo: any): string {
   try {
-    const remoteUrl = execSync('git remote get-url origin', { encoding: 'utf8' }).trim();
+    const remoteUrl = execSync('git remote get-url origin', {
+      encoding: 'utf8',
+    }).trim();
     const match = remoteUrl.match(/github\.com[:/][^/]+\/([^/.]+)/);
     return match ? match[1].replace('.git', '') : 'unknown';
   } catch {

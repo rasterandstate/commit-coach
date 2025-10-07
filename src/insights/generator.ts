@@ -317,7 +317,8 @@ export class InsightGenerator {
           id: 'hardcoded-secrets',
           type: 'error',
           title: 'Potential Hardcoded Secret',
-          message: 'Potential hardcoded secret detected - use environment variables instead',
+          message:
+            'Potential hardcoded secret detected - use environment variables instead',
           confidence: 0.8,
           metadata: {
             pattern: pattern.toString(),
@@ -333,7 +334,8 @@ export class InsightGenerator {
         id: 'sql-injection-risk',
         type: 'error',
         title: 'Potential SQL Injection Risk',
-        message: 'Potential SQL injection risk detected - use parameterized queries',
+        message:
+          'Potential SQL injection risk detected - use parameterized queries',
         confidence: 0.7,
         metadata: {
           riskType: 'sql-injection',
@@ -342,7 +344,10 @@ export class InsightGenerator {
     }
 
     // Check for XSS risks
-    if (commit.diff.includes('innerHTML') && !commit.diff.includes('textContent')) {
+    if (
+      commit.diff.includes('innerHTML') &&
+      !commit.diff.includes('textContent')
+    ) {
       insights.push({
         id: 'xss-risk',
         type: 'error',
@@ -363,8 +368,10 @@ export class InsightGenerator {
 
     // Check for debug code
     const debugPatterns = ['console.log', 'debugger', 'alert(', 'print('];
-    const hasDebugCode = debugPatterns.some(pattern => commit.diff.includes(pattern));
-    
+    const hasDebugCode = debugPatterns.some(pattern =>
+      commit.diff.includes(pattern)
+    );
+
     if (hasDebugCode) {
       insights.push({
         id: 'debug-code',
@@ -373,7 +380,9 @@ export class InsightGenerator {
         message: 'Debug code detected - remove before merging',
         confidence: 0.9,
         metadata: {
-          debugPatterns: debugPatterns.filter(pattern => commit.diff.includes(pattern)),
+          debugPatterns: debugPatterns.filter(pattern =>
+            commit.diff.includes(pattern)
+          ),
         },
       });
     }
@@ -390,25 +399,30 @@ export class InsightGenerator {
         message: `Large file(s) added (${largeFiles.map(f => f.path).join(', ')}) - consider if these should be in version control`,
         confidence: 0.8,
         metadata: {
-          largeFiles: largeFiles.map(f => ({ path: f.path, size: f.additions })),
+          largeFiles: largeFiles.map(f => ({
+            path: f.path,
+            size: f.additions,
+          })),
         },
       });
     }
 
     // Check for dependency updates
-    const dependencyFiles = commit.files.filter(file =>
-      file.path.includes('package.json') ||
-      file.path.includes('yarn.lock') ||
-      file.path.includes('pnpm-lock.yaml') ||
-      file.path.includes('requirements.txt') ||
-      file.path.includes('go.mod')
+    const dependencyFiles = commit.files.filter(
+      file =>
+        file.path.includes('package.json') ||
+        file.path.includes('yarn.lock') ||
+        file.path.includes('pnpm-lock.yaml') ||
+        file.path.includes('requirements.txt') ||
+        file.path.includes('go.mod')
     );
     if (dependencyFiles.length > 0) {
       insights.push({
         id: 'dependency-update',
         type: 'info',
         title: 'Dependencies Updated',
-        message: 'Dependencies updated - run tests and check for breaking changes',
+        message:
+          'Dependencies updated - run tests and check for breaking changes',
         confidence: 0.9,
         metadata: {
           dependencyFiles: dependencyFiles.map(f => f.path),
@@ -417,12 +431,17 @@ export class InsightGenerator {
     }
 
     // Check for missing error handling in async functions
-    if (commit.diff.includes('async ') && !commit.diff.includes('try') && !commit.diff.includes('catch')) {
+    if (
+      commit.diff.includes('async ') &&
+      !commit.diff.includes('try') &&
+      !commit.diff.includes('catch')
+    ) {
       insights.push({
         id: 'missing-error-handling',
         type: 'warning',
         title: 'Missing Error Handling',
-        message: 'Async function added without error handling - consider try/catch blocks',
+        message:
+          'Async function added without error handling - consider try/catch blocks',
         confidence: 0.6,
         metadata: {
           issueType: 'error-handling',
@@ -431,12 +450,16 @@ export class InsightGenerator {
     }
 
     // Check for TypeScript any type usage
-    if (commit.files.some(f => f.path.endsWith('.ts')) && commit.diff.includes(': any')) {
+    if (
+      commit.files.some(f => f.path.endsWith('.ts')) &&
+      commit.diff.includes(': any')
+    ) {
       insights.push({
         id: 'typescript-any-type',
         type: 'warning',
         title: 'TypeScript Any Type Usage',
-        message: "Avoid using 'any' type - use specific types for better type safety",
+        message:
+          "Avoid using 'any' type - use specific types for better type safety",
         confidence: 0.7,
         metadata: {
           language: 'typescript',
@@ -452,23 +475,29 @@ export class InsightGenerator {
 
     // Check for merge conflict markers
     const conflictMarkers = ['<<<<<<<', '>>>>>>>', '======='];
-    const hasConflictMarkers = conflictMarkers.some(marker => commit.diff.includes(marker));
-    
+    const hasConflictMarkers = conflictMarkers.some(marker =>
+      commit.diff.includes(marker)
+    );
+
     if (hasConflictMarkers) {
       insights.push({
         id: 'merge-conflict-markers',
         type: 'error',
         title: 'Merge Conflict Markers',
-        message: 'Merge conflict markers detected - resolve conflicts before committing',
+        message:
+          'Merge conflict markers detected - resolve conflicts before committing',
         confidence: 1.0,
         metadata: {
-          conflictMarkers: conflictMarkers.filter(marker => commit.diff.includes(marker)),
+          conflictMarkers: conflictMarkers.filter(marker =>
+            commit.diff.includes(marker)
+          ),
         },
       });
     }
 
     // Check for binary file additions
-    const binaryExtensions = /\.(jpg|jpeg|png|gif|pdf|zip|exe|dll|bin|so|dylib)$/i;
+    const binaryExtensions =
+      /\.(jpg|jpeg|png|gif|pdf|zip|exe|dll|bin|so|dylib)$/i;
     const binaryFiles = commit.files.filter(
       file => file.status === 'added' && binaryExtensions.test(file.path)
     );
@@ -486,19 +515,21 @@ export class InsightGenerator {
     }
 
     // Check for configuration file changes
-    const configFiles = commit.files.filter(file =>
-      file.path.includes('config') ||
-      file.path.includes('.env') ||
-      file.path.includes('settings') ||
-      file.path.includes('docker-compose') ||
-      file.path.includes('Dockerfile')
+    const configFiles = commit.files.filter(
+      file =>
+        file.path.includes('config') ||
+        file.path.includes('.env') ||
+        file.path.includes('settings') ||
+        file.path.includes('docker-compose') ||
+        file.path.includes('Dockerfile')
     );
     if (configFiles.length > 0) {
       insights.push({
         id: 'config-file-changes',
         type: 'info',
         title: 'Configuration Files Changed',
-        message: 'Configuration files changed - verify all environments are updated',
+        message:
+          'Configuration files changed - verify all environments are updated',
         confidence: 0.8,
         metadata: {
           configFiles: configFiles.map(f => f.path),

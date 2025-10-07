@@ -1,4 +1,11 @@
-import { describe, it, expect, beforeEach, vi, type MockedFunction } from 'vitest';
+import {
+  describe,
+  it,
+  expect,
+  beforeEach,
+  vi,
+  type MockedFunction,
+} from 'vitest';
 import { GitAnalyzer } from './git.js';
 
 // Mock simple-git

@@ -11,18 +11,23 @@ export class GitAnalyzer {
   async getCommitInfo(commitHash: string): Promise<CommitInfo> {
     try {
       const [commit, diff, fullDiff] = await Promise.all([
-        this.git.show([commitHash, '--format=%H|%s|%an|%ad', '--date=iso', '--no-patch']),
+        this.git.show([
+          commitHash,
+          '--format=%H|%s|%an|%ad',
+          '--date=iso',
+          '--no-patch',
+        ]),
         this.git.show([commitHash, '--stat', '--name-status']),
         this.git.show([commitHash]),
       ]);
 
       const [hash, message, author, dateStr] = commit.trim().split('|');
       // Parse date string - handle timezone offset by removing space before timezone
-      const cleanDateStr = dateStr.replace(" -", "-").replace(" +", "+");
+      const cleanDateStr = dateStr.replace(' -', '-').replace(' +', '+');
       const date = new Date(cleanDateStr);
 
       const files = this.parseChangedFiles(diff);
-      
+
       // Calculate line counts from the full diff
       this.calculateLineCounts(files, fullDiff);
 
@@ -75,7 +80,12 @@ export class GitAnalyzer {
 
     for (const line of lines) {
       // Skip empty lines and commit info lines
-      if (!line.trim() || line.startsWith('commit') || line.startsWith('Author') || line.startsWith('Date')) {
+      if (
+        !line.trim() ||
+        line.startsWith('commit') ||
+        line.startsWith('Author') ||
+        line.startsWith('Date')
+      ) {
         continue;
       }
 
@@ -107,18 +117,20 @@ export class GitAnalyzer {
 
   private calculateLineCounts(files: ChangedFile[], fullDiff: string): void {
     const diffSections = fullDiff.split('diff --git');
-    
+
     for (const file of files) {
       // Find the diff section for this file
-      const fileSection = diffSections.find(section => 
-        section.includes(`a/${file.path}`) || section.includes(`b/${file.path}`)
+      const fileSection = diffSections.find(
+        section =>
+          section.includes(`a/${file.path}`) ||
+          section.includes(`b/${file.path}`)
       );
-      
+
       if (fileSection) {
         const lines = fileSection.split('\n');
         let additions = 0;
         let deletions = 0;
-        
+
         for (const line of lines) {
           if (line.startsWith('+') && !line.startsWith('+++')) {
             additions++;
@@ -126,7 +138,7 @@ export class GitAnalyzer {
             deletions++;
           }
         }
-        
+
         file.additions = additions;
         file.deletions = deletions;
       }
