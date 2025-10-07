@@ -23,7 +23,7 @@ Analyzes commits and provides intelligent insights like:
 
 See Commit Coach in action with real git workflows:
 
-[![asciicast](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB.svg)](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB) - Real Workflow Demo
+[![asciicast](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB.svg)](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB)
 
 ## Quick Start
 
