@@ -72,7 +72,9 @@ program
     'Pull request number (auto-detected if not provided)'
   )
   .option('--comment', 'Post comment on PR', true)
+  .option('--no-comment', 'Disable posting comment on PR')
   .option('--status-check', 'Create status check', true)
+  .option('--no-status-check', 'Disable creating status check')
   .action(async options => {
     try {
       await analyzeWithGitHub(options);

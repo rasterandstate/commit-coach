@@ -38,6 +38,9 @@ async function main() {
       command += ` --pr ${prNumber}`;
     }
 
+    // Note: The CLI uses --comment and --status-check as boolean flags
+    // When they are true (default), we don't need to specify them
+    // When they are false, we need to use --no-comment and --no-status-check
     if (!comment) {
       command += ' --no-comment';
     }
