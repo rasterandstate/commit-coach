@@ -9,7 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "build:action": "tsc && cp dist/action.js dist/action.js.tmp && echo '#!/usr/bin/env node' > dist/action.js && cat dist/action.js.tmp >> dist/action.js && rm dist/action.js.tmp && chmod +x dist/action.js",
+    "build:action": "tsc -p tsconfig.action.json",
     "dev": "tsx src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest",
