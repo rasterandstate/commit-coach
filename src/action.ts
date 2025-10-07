@@ -12,15 +12,6 @@ async function main() {
   const comment = process.env.INPUT_COMMENT !== 'false';
   const statusCheck = process.env.INPUT_STATUS_CHECK !== 'false';
 
-  console.log('Debug - Input values:');
-  console.log('INPUT_COMMENT:', process.env.INPUT_COMMENT);
-  console.log('INPUT_STATUS_CHECK:', process.env.INPUT_STATUS_CHECK);
-  console.log('All INPUT_* env vars:');
-  Object.keys(process.env).filter(key => key.startsWith('INPUT_')).forEach(key => {
-    console.log(`  ${key}:`, process.env[key]);
-  });
-  console.log('comment:', comment);
-  console.log('statusCheck:', statusCheck);
 
   if (!githubToken) {
     console.error('❌ GitHub token is required');
