@@ -25,7 +25,12 @@
     "coach": "npm run build && npm run start",
     "hooks:install": "lefthook install",
     "hooks:uninstall": "lefthook uninstall",
-    "hooks:run": "lefthook run"
+    "hooks:run": "lefthook run",
+    "release": "node scripts/release.js",
+    "release:patch": "npm run release patch",
+    "release:minor": "npm run release minor",
+    "release:major": "npm run release major",
+    "release:prerelease": "npm run release prerelease"
   },
   "keywords": [
     "git",

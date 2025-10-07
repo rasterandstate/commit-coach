@@ -4,6 +4,11 @@
 
 # Commit Coach
 
+[![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Commit%20Coach-blue.svg?logo=github&logoColor=white)](https://github.com/marketplace/actions/commit-coach)
+[![Version](https://img.shields.io/github/v/release/rasterandstate/commit-coach?logo=github)](https://github.com/rasterandstate/commit-coach/releases)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D24.0.0-brightgreen.svg)](https://nodejs.org/)
+
 An intelligent commit analysis tool that provides insights and coaching for code changes.
 
 ## What it does
@@ -14,11 +19,37 @@ Analyzes commits and provides intelligent insights like:
 - **"You added feature flags - consider documenting them"**
 - **"This is a large commit (300+ lines) - consider breaking it up"**
 
+## 🎬 Live Demo
+
+See Commit Coach in action with real git workflows:
+
+[![asciicast](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB.svg)](https://asciinema.org/a/RVu88qm4Ya1OmLVgKyeiH5taB) - Real Workflow Demo
+[![asciicast](https://asciinema.org/a/l0Z614phVIqup1LkaFwl71w9Y.svg)](https://asciinema.org/a/l0Z614phVIqup1LkaFwl71w9Y) - GitHub Actions Integration
+
 ## Quick Start
 
 ### GitHub Actions (Recommended)
 
-Add this to your `.github/workflows/commit-coach.yml`:
+#### Marketplace Installation (Coming Soon)
+Once published to the GitHub Marketplace, you'll be able to install with one click or use:
+
+```yaml
+name: Commit Coach
+on: [push, pull_request]
+jobs:
+  commit-coach:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - uses: rasterandstate/commit-coach@v1
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+#### Direct Repository Installation
+For now, you can use the action directly from the repository:
 
 ```yaml
 name: Commit Coach
@@ -38,17 +69,18 @@ jobs:
 ### CLI Installation
 
 ```bash
-# Install
-pnpm add -D commit-coach
+# Install from source (after cloning the repository)
+npm install
+npm run build
 
 # Initialize config
-commit-coach init
+./dist/index.js init
 
 # Analyze current commit
-commit-coach analyze
+./dist/index.js analyze
 
 # GitHub integration
-commit-coach github --pr 123
+./dist/index.js github --pr 123
 ```
 
 ## Configuration
@@ -106,25 +138,21 @@ npm run hooks:uninstall
 
 ### 🔒 Security Rules
 - **Hardcoded Secrets**: Detects API keys, tokens, and credentials
-- **SQL Injection**: Identifies potential SQL injection vulnerabilities
-- **XSS Prevention**: Warns about unsafe DOM manipulation
+- **Security Patterns**: Identifies potential security vulnerabilities
 
 ### 🧪 Code Quality Rules
 - **Test Coverage**: Warns when source files lack tests
-- **Debug Code**: Detects console.log, debugger statements
-- **Error Handling**: Flags async functions without try/catch
-- **TypeScript Safety**: Warns about 'any' type usage
+- **Code Quality**: Analyzes code patterns and quality metrics
 
 ### 📝 Workflow Rules
-- **Merge Conflicts**: Detects unresolved conflict markers
-- **Large Files**: Warns about large file additions
-- **Dependencies**: Alerts on package updates
-- **Configuration**: Flags config file changes
+- **Large Commits**: Warns about large commits (200+ lines)
+- **Commit Messages**: Flags short or unclear commit messages
+- **TODO Comments**: Detects TODO/FIXME comments in code
 
 ### 🔄 API & Documentation Rules
 - **Public API Changes**: Detects API removals and new APIs
 - **Documentation**: Suggests updating docs for new features
-- **Commit Quality**: Flags large commits and short messages
+- **Feature Flags**: Identifies new feature flags that need documentation
 - **Breaking Changes**: Detects potential breaking changes
 
 📖 **[Complete Rules Documentation](docs/RULES.md)** - Learn how to create custom rules and configure all available options.

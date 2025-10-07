@@ -1,9 +1,9 @@
 name: 'Commit Coach'
-description: 'An intelligent commit analysis tool that provides insights and coaching for code changes'
+description: 'An intelligent commit analysis tool that provides insights and coaching for code changes. Analyzes commits for missing tests, security issues, code quality, and provides actionable feedback.'
 author: 'Stephen Way'
 branding:
   icon: 'eye'
-  color: 'white'
+  color: 'blue'
 
 inputs:
   github-token:
