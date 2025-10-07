@@ -93,10 +93,10 @@ jobs:
         run: |
           # For push events, analyze the latest commit
           if [ "${{ github.event_name }}" = "push" ]; then
-            pnpm run coach github -- --commit ${{ github.sha }} --owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }}
+            pnpm run coach github --commit ${{ github.sha }} --owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }}
           fi
 
           # For pull request events, analyze the PR commits
           if [ "${{ github.event_name }}" = "pull_request" ]; then
-            pnpm run coach github -- --pr ${{ github.event.number }} --owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }}
+            pnpm run coach github --pr ${{ github.event.number }} --owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }}
           fi
