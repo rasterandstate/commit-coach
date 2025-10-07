@@ -1,0 +1,66 @@
+{
+  "name": "commit-coach",
+  "version": "1.0.0",
+  "description": "An intelligent commit analysis tool that provides insights and coaching for code changes",
+  "main": "dist/index.js",
+  "type": "module",
+  "bin": {
+    "commit-coach": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:action": "tsc && cp dist/action.js dist/action.js.tmp && echo '#!/usr/bin/env node' > dist/action.js && cat dist/action.js.tmp >> dist/action.js && rm dist/action.js.tmp && chmod +x dist/action.js",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "pre-commit": "pnpm run format && pnpm run lint:fix && pnpm run test:run",
+    "coach": "pnpm run build && pnpm run start"
+  },
+  "keywords": [
+    "git",
+    "commit",
+    "code-review",
+    "ci",
+    "automation",
+    "insights",
+    "github-action",
+    "code-quality",
+    "testing",
+    "documentation"
+  ],
+  "author": "Stephen",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^22.0.0",
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "glob": "^11.0.3",
+    "ignore": "^7.0.5",
+    "simple-git": "^3.28.0",
+    "yaml": "^2.8.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.37.0",
+    "@types/node": "^24.7.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "@vitest/coverage-v8": "^3.2.4",
+    "eslint": "^9.37.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=24.0.0"
+  }
+}

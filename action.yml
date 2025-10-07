@@ -1,0 +1,33 @@
+name: 'Commit Coach'
+description: 'An intelligent commit analysis tool that provides insights and coaching for code changes'
+author: 'Stephen Way'
+branding:
+  icon: 'eye'
+  color: 'blue'
+
+inputs:
+  github-token:
+    description: 'GitHub token for API access'
+    required: true
+  config-path:
+    description: 'Path to commit-coach configuration file'
+    required: false
+    default: '.commit-coach.yml'
+  commit-hash:
+    description: 'Specific commit hash to analyze (defaults to current commit)'
+    required: false
+  pr-number:
+    description: 'Pull request number (auto-detected if not provided)'
+    required: false
+  comment:
+    description: 'Post comment on PR'
+    required: false
+    default: 'true'
+  status-check:
+    description: 'Create status check'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'node20'
+  main: 'dist/action.js'

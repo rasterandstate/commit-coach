@@ -1,0 +1,67 @@
+#!/usr/bin/env node
+
+import { execSync } from 'child_process';
+import { existsSync } from 'fs';
+
+async function main() {
+  const githubToken =
+    process.env.INPUT_GITHUB_TOKEN || process.env.GITHUB_TOKEN;
+  const configPath = process.env.INPUT_CONFIG_PATH || '.commit-coach.yml';
+  const commitHash = process.env.INPUT_COMMIT_HASH;
+  const prNumber = process.env.INPUT_PR_NUMBER;
+  const comment = process.env.INPUT_COMMENT !== 'false';
+  const statusCheck = process.env.INPUT_STATUS_CHECK !== 'false';
+
+  if (!githubToken) {
+    console.error('❌ GitHub token is required');
+    process.exit(1);
+  }
+
+  // Set environment variables for the CLI
+  process.env.GITHUB_TOKEN = githubToken;
+
+  try {
+    // Check if config file exists
+    if (!existsSync(configPath)) {
+      console.log(`ℹ️  No config file found at ${configPath}, using defaults`);
+    }
+
+    // Build the command
+    let command = 'commit-coach github';
+
+    if (commitHash) {
+      command += ` --commit ${commitHash}`;
+    } else if (prNumber) {
+      command += ` --pr ${prNumber}`;
+    }
+
+    if (!comment) {
+      command += ' --no-comment';
+    }
+
+    if (!statusCheck) {
+      command += ' --no-status-check';
+    }
+
+    console.log(`🚀 Running: ${command}`);
+
+    // Execute the command
+    execSync(command, {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        GITHUB_TOKEN: githubToken,
+      },
+    });
+
+    console.log('✅ Commit Coach analysis completed successfully');
+  } catch (error) {
+    console.error('❌ Commit Coach analysis failed:', error);
+    process.exit(1);
+  }
+}
+
+main().catch(error => {
+  console.error('❌ Action failed:', error);
+  process.exit(1);
+});

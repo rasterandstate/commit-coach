@@ -1,0 +1,98 @@
+# Commit Coach Configuration Example
+# Copy this file to .commit-coach.yml and customize for your project
+
+rules:
+  # Test coverage rules
+  - id: missing-tests
+    enabled: true
+    severity: warning
+    conditions: ["sourceFilesWithoutTests.length > 0"]
+    message: "Consider adding tests for new/modified source files"
+    metadata:
+      testFilePatterns: ["*.test.js", "*.spec.js", "__tests__/**/*"]
+  
+  # Public API rules
+  - id: public-api-removed
+    enabled: true
+    severity: warning
+    conditions: ["removedApis.length > 0"]
+    message: "Public API removed - check for downstream dependencies"
+  
+  - id: public-api-added
+    enabled: true
+    severity: info
+    conditions: ["addedApis.length > 0"]
+    message: "New public APIs added - consider documenting them"
+  
+  # Commit size rules
+  - id: large-commit
+    enabled: true
+    severity: info
+    conditions: ["totalLines > 200"]
+    message: "Large commit - consider breaking into smaller changes"
+    metadata:
+      threshold: 200
+  
+  # Documentation rules
+  - id: missing-documentation
+    enabled: true
+    severity: suggestion
+    conditions: ["hasNewFeatures && !hasDocUpdates"]
+    message: "Consider updating documentation for new features"
+  
+  # Feature flag rules
+  - id: feature-flags-added
+    enabled: true
+    severity: suggestion
+    conditions: ["featureFlags.length > 0"]
+    message: "Document new feature flags and their purpose"
+  
+  # Breaking change rules
+  - id: breaking-changes
+    enabled: true
+    severity: error
+    conditions: ["breakingChanges.length > 0"]
+    message: "Breaking changes detected - update version and changelog"
+  
+  # Commit message rules
+  - id: short-commit-message
+    enabled: true
+    severity: suggestion
+    conditions: ["messageLength < 10"]
+    message: "Consider adding more context to commit message"
+  
+  - id: todo-comments
+    enabled: true
+    severity: info
+    conditions: ["hasTodos"]
+    message: "TODO/FIXME comments found - track these items"
+
+# Output configuration
+output:
+  format: console  # console, comment, status-check, report
+  includeSummary: true
+  maxInsights: 10
+
+# Integration settings
+integrations:
+  github:
+    token: "${GITHUB_TOKEN}"  # Use environment variable
+    owner: "your-org"
+    repo: "your-repo"
+    commentOnPR: true
+    createStatusCheck: true
+  
+  console:
+    colorize: true
+    verbose: false
+
+# Thresholds and filtering
+thresholds:
+  minConfidence: 0.5
+  maxInsightsPerType:
+    error: 5
+    warning: 8
+    suggestion: 10
+    info: 15
+  skipOnSmallChanges: true
+  smallChangeThreshold: 10
