@@ -42,6 +42,38 @@ describe('InsightGenerator', () => {
   });
 
   describe('generateInsights', () => {
+    it('should generate security insights for XSS risks', () => {
+      mockCommit.diff = `
+        <div id="content"></div>
+        <script>
+          document.getElementById('content').innerHTML = userInput;
+        </script>
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const xssInsight = result.insights.find(insight => insight.id === 'xss-risk');
+      expect(xssInsight).toBeDefined();
+      expect(xssInsight?.type).toBe('error');
+      expect(xssInsight?.title).toBe('Potential XSS Risk');
+      expect(xssInsight?.confidence).toBe(0.6);
+    });
+
+    it('should not generate XSS insight when textContent is used', () => {
+      mockCommit.diff = `
+        <div id="content"></div>
+        <script>
+          document.getElementById('content').innerHTML = userInput;
+          document.getElementById('content').textContent = safeInput;
+        </script>
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const xssInsight = result.insights.find(insight => insight.id === 'xss-risk');
+      expect(xssInsight).toBeUndefined();
+    });
+
     it('should generate insights for missing tests', () => {
       mockCommit.files = [
         {
@@ -251,6 +283,116 @@ describe('InsightGenerator', () => {
       const result = generator.generateInsights(mockCommit);
 
       expect(result.insights.length).toBeLessThanOrEqual(2);
+    });
+
+    it('should generate debug code insights', () => {
+      mockCommit.diff = `
+        console.log('Debug message');
+        debugger;
+        alert('Debug alert');
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const debugInsight = result.insights.find(insight => insight.id === 'debug-code');
+      expect(debugInsight).toBeDefined();
+      expect(debugInsight?.type).toBe('warning');
+      expect(debugInsight?.title).toBe('Debug Code Detected');
+      expect(debugInsight?.confidence).toBe(0.9);
+    });
+
+    it('should generate large file insights', () => {
+      mockCommit.files = [
+        {
+          path: 'src/large-file.js',
+          status: 'added',
+          additions: 1500,
+          deletions: 0,
+          diff: '// Large file content...',
+        },
+      ];
+
+      const result = generator.generateInsights(mockCommit);
+
+      const largeFileInsight = result.insights.find(insight => insight.id === 'large-file-addition');
+      expect(largeFileInsight).toBeDefined();
+      expect(largeFileInsight?.type).toBe('warning');
+      expect(largeFileInsight?.title).toBe('Large File Added');
+    });
+
+    it('should generate missing error handling insights', () => {
+      mockCommit.diff = `
+        async function riskyFunction() {
+          const data = await fetch('/api/data');
+          const result = data.json();
+          return result;
+        }
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const errorHandlingInsight = result.insights.find(insight => insight.id === 'missing-error-handling');
+      expect(errorHandlingInsight).toBeDefined();
+      expect(errorHandlingInsight?.type).toBe('warning');
+      expect(errorHandlingInsight?.title).toBe('Missing Error Handling');
+    });
+
+    it('should generate TypeScript any type insights', () => {
+      mockCommit.files = [
+        {
+          path: 'src/utils.ts',
+          status: 'modified',
+          additions: 5,
+          deletions: 0,
+          diff: 'function processData(data: any): any { return data.someProperty; }',
+        },
+      ];
+      mockCommit.diff = `
+        function processData(data: any): any {
+          return data.someProperty;
+        }
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const anyTypeInsight = result.insights.find(insight => insight.id === 'typescript-any-type');
+      expect(anyTypeInsight).toBeDefined();
+      expect(anyTypeInsight?.type).toBe('warning');
+      expect(anyTypeInsight?.title).toBe('TypeScript Any Type Usage');
+    });
+
+    it('should generate hardcoded secrets insights', () => {
+      mockCommit.diff = `
+        const apiKey = 'sk-1234567890abcdef';
+        const password = 'mypassword123';
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const secretsInsight = result.insights.find(insight => insight.id === 'hardcoded-secrets');
+      expect(secretsInsight).toBeDefined();
+      expect(secretsInsight?.type).toBe('error');
+      expect(secretsInsight?.title).toBe('Potential Hardcoded Secret');
+    });
+
+    it('should generate merge conflict markers insights', () => {
+      mockCommit.diff = `
+        function example() {
+          return 'hello';
+        }
+        <<<<<<< HEAD
+        const newFeature = 'added';
+        =======
+        const oldFeature = 'removed';
+        >>>>>>> branch
+      `;
+
+      const result = generator.generateInsights(mockCommit);
+
+      const conflictInsight = result.insights.find(insight => insight.id === 'merge-conflict-markers');
+      expect(conflictInsight).toBeDefined();
+      expect(conflictInsight?.type).toBe('error');
+      expect(conflictInsight?.title).toBe('Merge Conflict Markers');
     });
   });
 });
