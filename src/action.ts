@@ -12,12 +12,17 @@ async function main() {
   const comment = process.env.INPUT_COMMENT !== 'false';
   const statusCheck = process.env.INPUT_STATUS_CHECK !== 'false';
 
-
   if (!githubToken) {
     console.error('❌ GitHub token is required');
     console.error('Available environment variables:');
-    console.error('INPUT_GITHUB_TOKEN:', process.env.INPUT_GITHUB_TOKEN ? '***' : 'undefined');
-    console.error('GITHUB_TOKEN:', process.env.GITHUB_TOKEN ? '***' : 'undefined');
+    console.error(
+      'INPUT_GITHUB_TOKEN:',
+      process.env.INPUT_GITHUB_TOKEN ? '***' : 'undefined'
+    );
+    console.error(
+      'GITHUB_TOKEN:',
+      process.env.GITHUB_TOKEN ? '***' : 'undefined'
+    );
     process.exit(1);
   }
 
