@@ -30,6 +30,12 @@ jobs:
       - name: Build action
         run: pnpm run build:action
 
+      - name: Build CLI
+        run: pnpm run build
+
+      - name: Install CLI globally
+        run: npm install -g .
+
       - name: Test Commit Coach Action
         uses: ./
         with:
