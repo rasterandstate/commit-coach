@@ -49,7 +49,7 @@ jobs:
         if: matrix.node-version == 24
         uses: codecov/codecov-action@v5
         with:
-          file: ./coverage/lcov.info
+          files: ./coverage/lcov.info
           flags: unittests
           name: codecov-umbrella
 
