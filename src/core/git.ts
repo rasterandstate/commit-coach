@@ -10,16 +10,21 @@ export class GitAnalyzer {
 
   async getCommitInfo(commitHash: string): Promise<CommitInfo> {
     try {
-      const [commit, diff] = await Promise.all([
-        this.git.show([commitHash, '--format=%H|%s|%an|%ad', '--date=iso']),
+      const [commit, diff, fullDiff] = await Promise.all([
+        this.git.show([commitHash, '--format=%H|%s|%an|%ad', '--date=iso', '--no-patch']),
         this.git.show([commitHash, '--stat', '--name-status']),
+        this.git.show([commitHash]),
       ]);
 
       const [hash, message, author, dateStr] = commit.trim().split('|');
-      const date = new Date(dateStr);
+      // Parse date string - handle timezone offset by removing space before timezone
+      const cleanDateStr = dateStr.replace(" -", "-").replace(" +", "+");
+      const date = new Date(cleanDateStr);
 
       const files = this.parseChangedFiles(diff);
-      const fullDiff = await this.git.show([commitHash]);
+      
+      // Calculate line counts from the full diff
+      this.calculateLineCounts(files, fullDiff);
 
       return {
         hash: hash.trim(),
@@ -69,25 +74,22 @@ export class GitAnalyzer {
     const lines = diffOutput.split('\n');
 
     for (const line of lines) {
-      if (line.includes('|')) {
-        const [statusAndPath, changes] = line.split('|');
-        const match = statusAndPath.match(/^(.+?)\s+(.+)$/);
+      // Skip empty lines and commit info lines
+      if (!line.trim() || line.startsWith('commit') || line.startsWith('Author') || line.startsWith('Date')) {
+        continue;
+      }
 
-        if (match) {
-          const [, status, path] = match;
-          const changeMatch = changes.match(/(\d+)\s+(\d+)/);
-
-          if (changeMatch) {
-            const [, additions, deletions] = changeMatch;
-            files.push({
-              path: path.trim(),
-              status: this.parseFileStatus(status.trim()),
-              additions: parseInt(additions, 10),
-              deletions: parseInt(deletions, 10),
-              diff: '', // Will be populated separately if needed
-            });
-          }
-        }
+      // Parse name-status format: "M\tpath/to/file" or "A\tpath/to/file"
+      const match = line.match(/^([AMD])\t(.+)$/);
+      if (match) {
+        const [, status, path] = match;
+        files.push({
+          path: path.trim(),
+          status: this.parseFileStatus(status.trim()),
+          additions: 0, // Will be calculated from diff if needed
+          deletions: 0, // Will be calculated from diff if needed
+          diff: '', // Will be populated separately if needed
+        });
       }
     }
 
@@ -101,6 +103,34 @@ export class GitAnalyzer {
     if (status.includes('D')) return 'deleted';
     if (status.includes('R')) return 'renamed';
     return 'modified';
+  }
+
+  private calculateLineCounts(files: ChangedFile[], fullDiff: string): void {
+    const diffSections = fullDiff.split('diff --git');
+    
+    for (const file of files) {
+      // Find the diff section for this file
+      const fileSection = diffSections.find(section => 
+        section.includes(`a/${file.path}`) || section.includes(`b/${file.path}`)
+      );
+      
+      if (fileSection) {
+        const lines = fileSection.split('\n');
+        let additions = 0;
+        let deletions = 0;
+        
+        for (const line of lines) {
+          if (line.startsWith('+') && !line.startsWith('+++')) {
+            additions++;
+          } else if (line.startsWith('-') && !line.startsWith('---')) {
+            deletions++;
+          }
+        }
+        
+        file.additions = additions;
+        file.deletions = deletions;
+      }
+    }
   }
 
   async getFileDiff(commitHash: string, filePath: string): Promise<string> {
