@@ -52,7 +52,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const xssInsight = result.insights.find(insight => insight.id === 'xss-risk');
+      const xssInsight = result.insights.find(
+        insight => insight.id === 'xss-risk'
+      );
       expect(xssInsight).toBeDefined();
       expect(xssInsight?.type).toBe('error');
       expect(xssInsight?.title).toBe('Potential XSS Risk');
@@ -70,7 +72,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const xssInsight = result.insights.find(insight => insight.id === 'xss-risk');
+      const xssInsight = result.insights.find(
+        insight => insight.id === 'xss-risk'
+      );
       expect(xssInsight).toBeUndefined();
     });
 
@@ -294,7 +298,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const debugInsight = result.insights.find(insight => insight.id === 'debug-code');
+      const debugInsight = result.insights.find(
+        insight => insight.id === 'debug-code'
+      );
       expect(debugInsight).toBeDefined();
       expect(debugInsight?.type).toBe('warning');
       expect(debugInsight?.title).toBe('Debug Code Detected');
@@ -314,7 +320,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const largeFileInsight = result.insights.find(insight => insight.id === 'large-file-addition');
+      const largeFileInsight = result.insights.find(
+        insight => insight.id === 'large-file-addition'
+      );
       expect(largeFileInsight).toBeDefined();
       expect(largeFileInsight?.type).toBe('warning');
       expect(largeFileInsight?.title).toBe('Large File Added');
@@ -331,7 +339,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const errorHandlingInsight = result.insights.find(insight => insight.id === 'missing-error-handling');
+      const errorHandlingInsight = result.insights.find(
+        insight => insight.id === 'missing-error-handling'
+      );
       expect(errorHandlingInsight).toBeDefined();
       expect(errorHandlingInsight?.type).toBe('warning');
       expect(errorHandlingInsight?.title).toBe('Missing Error Handling');
@@ -355,7 +365,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const anyTypeInsight = result.insights.find(insight => insight.id === 'typescript-any-type');
+      const anyTypeInsight = result.insights.find(
+        insight => insight.id === 'typescript-any-type'
+      );
       expect(anyTypeInsight).toBeDefined();
       expect(anyTypeInsight?.type).toBe('warning');
       expect(anyTypeInsight?.title).toBe('TypeScript Any Type Usage');
@@ -369,7 +381,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const secretsInsight = result.insights.find(insight => insight.id === 'hardcoded-secrets');
+      const secretsInsight = result.insights.find(
+        insight => insight.id === 'hardcoded-secrets'
+      );
       expect(secretsInsight).toBeDefined();
       expect(secretsInsight?.type).toBe('error');
       expect(secretsInsight?.title).toBe('Potential Hardcoded Secret');
@@ -389,7 +403,9 @@ describe('InsightGenerator', () => {
 
       const result = generator.generateInsights(mockCommit);
 
-      const conflictInsight = result.insights.find(insight => insight.id === 'merge-conflict-markers');
+      const conflictInsight = result.insights.find(
+        insight => insight.id === 'merge-conflict-markers'
+      );
       expect(conflictInsight).toBeDefined();
       expect(conflictInsight?.type).toBe('error');
       expect(conflictInsight?.title).toBe('Merge Conflict Markers');

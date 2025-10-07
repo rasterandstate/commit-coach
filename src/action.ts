@@ -20,7 +20,9 @@ export function parseInputs(): ActionInputs {
   const prNumber = process.env.INPUT_PR_NUMBER;
   const comment = process.env.INPUT_COMMENT !== 'false';
   // Handle both possible environment variable names for status-check
-  const statusCheck = (process.env.INPUT_STATUS_CHECK || process.env['INPUT_STATUS-CHECK']) !== 'false';
+  const statusCheck =
+    (process.env.INPUT_STATUS_CHECK || process.env['INPUT_STATUS-CHECK']) !==
+    'false';
 
   return {
     githubToken: githubToken || '',
@@ -96,7 +98,9 @@ export async function runAction(): Promise<void> {
   try {
     // Check if config file exists
     if (!existsSync(inputs.configPath)) {
-      console.log(`ℹ️  No config file found at ${inputs.configPath}, using defaults`);
+      console.log(
+        `ℹ️  No config file found at ${inputs.configPath}, using defaults`
+      );
     }
 
     const command = buildCommand(inputs);

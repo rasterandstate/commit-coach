@@ -74,6 +74,34 @@ integrations:
     createStatusCheck: true
 ```
 
+## Git Hooks
+
+This project uses [Lefthook](https://github.com/evilmartians/lefthook) for git hooks to ensure code quality:
+
+### Pre-commit Hooks
+- **Formatting**: Runs Prettier to check code formatting
+- **Linting**: Runs ESLint to check code quality
+- **Type Checking**: Runs TypeScript compiler to check types
+- **Tests**: Runs tests for changed files
+
+### Pre-push Hooks
+- **Build**: Ensures the project compiles successfully
+- **Test Coverage**: Runs full test suite with coverage
+- **Action Build**: Builds the GitHub Action
+
+### Setup
+```bash
+# Install hooks (done automatically after npm install)
+npm run hooks:install
+
+# Run hooks manually
+npm run hooks:run pre-commit
+npm run hooks:run pre-push
+
+# Uninstall hooks
+npm run hooks:uninstall
+```
+
 ## Built-in Rules
 
 ### 🔒 Security Rules

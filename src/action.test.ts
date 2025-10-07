@@ -26,7 +26,7 @@ describe('action', () => {
   beforeEach(() => {
     // Reset environment
     process.env = { ...originalEnv };
-    
+
     // Mock process.exit to prevent actual exit
     vi.spyOn(process, 'exit').mockImplementation((code?: number) => {
       throw new Error(`process.exit(${code})`);
@@ -159,7 +159,9 @@ describe('action', () => {
       };
 
       expect(() => validateInputs(inputs)).toThrow('process.exit(1)');
-      expect(console.error).toHaveBeenCalledWith('Available environment variables:');
+      expect(console.error).toHaveBeenCalledWith(
+        'Available environment variables:'
+      );
       expect(console.error).toHaveBeenCalledWith('INPUT_GITHUB_TOKEN:', '***');
       expect(console.error).toHaveBeenCalledWith('GITHUB_TOKEN:', '***');
     });
@@ -272,7 +274,9 @@ describe('action', () => {
 
       const result = buildCommand(inputs);
 
-      expect(result).toBe('commit-coach github --commit-hash abc123 --no-comment --no-status-check');
+      expect(result).toBe(
+        'commit-coach github --commit-hash abc123 --no-comment --no-status-check'
+      );
     });
   });
 
@@ -282,7 +286,9 @@ describe('action', () => {
 
       executeCommand('commit-coach github', 'test-token');
 
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github');
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github'
+      );
       expect(mockExecSync).toHaveBeenCalledWith('commit-coach github', {
         stdio: 'inherit',
         env: {
@@ -290,7 +296,9 @@ describe('action', () => {
           GITHUB_TOKEN: 'test-token',
         },
       });
-      expect(console.log).toHaveBeenCalledWith('✅ Commit Coach analysis completed successfully');
+      expect(console.log).toHaveBeenCalledWith(
+        '✅ Commit Coach analysis completed successfully'
+      );
     });
 
     it('should pass environment variables correctly', () => {
@@ -298,13 +306,16 @@ describe('action', () => {
 
       executeCommand('commit-coach github --pr-number 42', 'test-token');
 
-      expect(mockExecSync).toHaveBeenCalledWith('commit-coach github --pr-number 42', {
-        stdio: 'inherit',
-        env: {
-          ...process.env,
-          GITHUB_TOKEN: 'test-token',
-        },
-      });
+      expect(mockExecSync).toHaveBeenCalledWith(
+        'commit-coach github --pr-number 42',
+        {
+          stdio: 'inherit',
+          env: {
+            ...process.env,
+            GITHUB_TOKEN: 'test-token',
+          },
+        }
+      );
     });
   });
 
@@ -317,9 +328,15 @@ describe('action', () => {
       await runAction();
 
       expect(mockExistsSync).toHaveBeenCalledWith('.commit-coach.yml');
-      expect(console.log).not.toHaveBeenCalledWith(expect.stringContaining('No config file found'));
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github');
-      expect(console.log).toHaveBeenCalledWith('✅ Commit Coach analysis completed successfully');
+      expect(console.log).not.toHaveBeenCalledWith(
+        expect.stringContaining('No config file found')
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github'
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        '✅ Commit Coach analysis completed successfully'
+      );
     });
 
     it('should run action successfully without config file', async () => {
@@ -330,9 +347,15 @@ describe('action', () => {
       await runAction();
 
       expect(mockExistsSync).toHaveBeenCalledWith('.commit-coach.yml');
-      expect(console.log).toHaveBeenCalledWith('ℹ️  No config file found at .commit-coach.yml, using defaults');
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github');
-      expect(console.log).toHaveBeenCalledWith('✅ Commit Coach analysis completed successfully');
+      expect(console.log).toHaveBeenCalledWith(
+        'ℹ️  No config file found at .commit-coach.yml, using defaults'
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github'
+      );
+      expect(console.log).toHaveBeenCalledWith(
+        '✅ Commit Coach analysis completed successfully'
+      );
     });
 
     it('should run action with custom config path', async () => {
@@ -344,7 +367,9 @@ describe('action', () => {
       await runAction();
 
       expect(mockExistsSync).toHaveBeenCalledWith('custom-config.yml');
-      expect(console.log).toHaveBeenCalledWith('ℹ️  No config file found at custom-config.yml, using defaults');
+      expect(console.log).toHaveBeenCalledWith(
+        'ℹ️  No config file found at custom-config.yml, using defaults'
+      );
     });
 
     it('should run action with commit hash', async () => {
@@ -355,7 +380,9 @@ describe('action', () => {
 
       await runAction();
 
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github --commit-hash abc123');
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github --commit-hash abc123'
+      );
     });
 
     it('should run action with PR number', async () => {
@@ -366,7 +393,9 @@ describe('action', () => {
 
       await runAction();
 
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github --pr-number 42');
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github --pr-number 42'
+      );
     });
 
     it('should run action with disabled comment and status check', async () => {
@@ -378,7 +407,9 @@ describe('action', () => {
 
       await runAction();
 
-      expect(console.log).toHaveBeenCalledWith('🚀 Running: commit-coach github --no-comment --no-status-check');
+      expect(console.log).toHaveBeenCalledWith(
+        '🚀 Running: commit-coach github --no-comment --no-status-check'
+      );
     });
 
     it('should handle command execution failure', async () => {
@@ -390,7 +421,10 @@ describe('action', () => {
       });
 
       await expect(runAction()).rejects.toThrow('process.exit(1)');
-      expect(console.error).toHaveBeenCalledWith('❌ Commit Coach analysis failed:', error);
+      expect(console.error).toHaveBeenCalledWith(
+        '❌ Commit Coach analysis failed:',
+        error
+      );
     });
 
     it('should fail without GitHub token', async () => {

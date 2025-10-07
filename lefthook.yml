@@ -1,0 +1,71 @@
+# Lefthook configuration for commit-coach
+# https://github.com/evilmartians/lefthook
+
+# Pre-commit hooks - run on every commit
+pre-commit:
+  parallel: true
+  commands:
+    # Format code with Prettier
+    format:
+      glob: '*.{ts,js,json,md,yml,yaml}'
+      run: npm run format:check
+      fail_text: "Code formatting issues found. Run 'npm run format' to fix."
+
+    # Lint TypeScript files
+    lint:
+      glob: 'src/**/*.ts'
+      run: npm run lint
+      fail_text: "Linting issues found. Run 'npm run lint:fix' to fix."
+
+    # Type checking
+    typecheck:
+      glob: 'src/**/*.ts'
+      run: npm run typecheck
+      fail_text: 'TypeScript type errors found.'
+
+    # Run tests for changed files
+    test:
+      glob: 'src/**/*.ts'
+      run: npm run test:run
+      fail_text: 'Tests failed. Please fix failing tests before committing.'
+
+# Pre-push hooks - run before pushing to remote
+pre-push:
+  parallel: false
+  commands:
+    # Build the project to ensure it compiles
+    build:
+      run: npm run build
+      fail_text: 'Build failed. Please fix compilation errors before pushing.'
+
+    # Run full test suite with coverage
+    test-coverage:
+      run: npm run test:coverage
+      fail_text: 'Test coverage requirements not met or tests failed.'
+
+    # Build the GitHub Action
+    build-action:
+      run: npm run build:action
+      fail_text: 'GitHub Action build failed.'
+
+# Optional: Commit message validation (disabled for now)
+# commit-msg:
+#   commands:
+#     # Basic commit message format validation
+#     commit-msg-format:
+#       run: |
+#         if ! grep -qE '^(feat|fix|docs|style|refactor|test|chore|ci|build|perf|revert)(\(.+\))?: .{1,50}' "$LEFTHOOK_COMMIT_MSG_FILE"; then
+#           echo "❌ Commit message format is invalid."
+#           echo "Expected format: type(scope): description"
+#           echo "Types: feat, fix, docs, style, refactor, test, chore, ci, build, perf, revert"
+#           echo "Example: feat: add new feature"
+#           exit 1
+#         fi
+#       fail_text: 'Commit message format is invalid. Use conventional commit format.'
+
+# Skip hooks for certain files
+skip_output:
+  - dist/
+  - node_modules/
+  - coverage/
+  - .git/

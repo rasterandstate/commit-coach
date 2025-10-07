@@ -257,7 +257,8 @@ describe('GitAnalyzer', () => {
     });
 
     it('should parse name-status format correctly', () => {
-      const diffOutput = 'M\tmodified-file.ts\nA\tnew-file.ts\nD\tdeleted-file.ts';
+      const diffOutput =
+        'M\tmodified-file.ts\nA\tnew-file.ts\nD\tdeleted-file.ts';
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = (gitAnalyzer as any).parseChangedFiles(diffOutput);
@@ -290,8 +291,20 @@ describe('GitAnalyzer', () => {
   describe('calculateLineCounts', () => {
     it('should calculate additions and deletions from diff sections', () => {
       const files = [
-        { path: 'test.ts', status: 'modified' as const, additions: 0, deletions: 0, diff: '' },
-        { path: 'other.ts', status: 'added' as const, additions: 0, deletions: 0, diff: '' },
+        {
+          path: 'test.ts',
+          status: 'modified' as const,
+          additions: 0,
+          deletions: 0,
+          diff: '',
+        },
+        {
+          path: 'other.ts',
+          status: 'added' as const,
+          additions: 0,
+          deletions: 0,
+          diff: '',
+        },
       ];
 
       const diffOutput = `diff --git a/test.ts b/test.ts
@@ -324,7 +337,13 @@ index 0000000..1234567
 
     it('should handle files without matching diff sections', () => {
       const files = [
-        { path: 'missing.ts', status: 'modified' as const, additions: 0, deletions: 0, diff: '' },
+        {
+          path: 'missing.ts',
+          status: 'modified' as const,
+          additions: 0,
+          deletions: 0,
+          diff: '',
+        },
       ];
 
       const diffOutput = `diff --git a/other.ts b/other.ts
