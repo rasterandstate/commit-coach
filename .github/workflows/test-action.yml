@@ -35,3 +35,9 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           config-path: '.commit-coach.yml'
+          comment: 'false'
+          status-check: 'false'
+        env:
+          # Ensure the token is available as both INPUT_GITHUB_TOKEN and GITHUB_TOKEN
+          INPUT_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

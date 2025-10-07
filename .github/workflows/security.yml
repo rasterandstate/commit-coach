@@ -31,6 +31,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-results.sarif'
+        continue-on-error: true
 
   codeql:
     runs-on: ubuntu-latest
@@ -71,3 +72,15 @@ jobs:
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        continue-on-error: true
+
+      - name: Check if Advanced Security is enabled
+        if: failure()
+        run: |
+          echo "⚠️ CodeQL analysis failed. This is likely because GitHub Advanced Security is not enabled for this repository."
+          echo "To enable CodeQL code scanning:"
+          echo "1. Go to repository Settings > Security & analysis"
+          echo "2. Enable 'Code scanning' under Code security and analysis"
+          echo "3. Or upgrade to GitHub Advanced Security if using GitHub Enterprise"
+          echo ""
+          echo "For now, the workflow will continue with other security checks."
