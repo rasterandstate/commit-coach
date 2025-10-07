@@ -255,5 +255,91 @@ describe('GitAnalyzer', () => {
       expect(Array.isArray(result)).toBe(true);
       // Should handle malformed input gracefully
     });
+
+    it('should parse name-status format correctly', () => {
+      const diffOutput = 'M\tmodified-file.ts\nA\tnew-file.ts\nD\tdeleted-file.ts';
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = (gitAnalyzer as any).parseChangedFiles(diffOutput);
+
+      expect(result).toHaveLength(3);
+      expect(result[0]).toEqual({
+        path: 'modified-file.ts',
+        status: 'modified',
+        additions: 0,
+        deletions: 0,
+        diff: '',
+      });
+      expect(result[1]).toEqual({
+        path: 'new-file.ts',
+        status: 'added',
+        additions: 0,
+        deletions: 0,
+        diff: '',
+      });
+      expect(result[2]).toEqual({
+        path: 'deleted-file.ts',
+        status: 'deleted',
+        additions: 0,
+        deletions: 0,
+        diff: '',
+      });
+    });
+  });
+
+  describe('calculateLineCounts', () => {
+    it('should calculate additions and deletions from diff sections', () => {
+      const files = [
+        { path: 'test.ts', status: 'modified' as const, additions: 0, deletions: 0, diff: '' },
+        { path: 'other.ts', status: 'added' as const, additions: 0, deletions: 0, diff: '' },
+      ];
+
+      const diffOutput = `diff --git a/test.ts b/test.ts
+index 1234567..abcdefg 100644
+--- a/test.ts
++++ b/test.ts
+@@ -1,3 +1,4 @@
+ line1
++line2
+ line3
+-line4
++line5
+diff --git a/other.ts b/other.ts
+new file mode 100644
+index 0000000..1234567
+--- /dev/null
++++ b/other.ts
+@@ -0,0 +1,2 @@
++new line 1
++new line 2`;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (gitAnalyzer as any).calculateLineCounts(files, diffOutput);
+
+      expect(files[0].additions).toBe(2); // +line2, +line5
+      expect(files[0].deletions).toBe(1); // -line4
+      expect(files[1].additions).toBe(2); // +new line 1, +new line 2
+      expect(files[1].deletions).toBe(0);
+    });
+
+    it('should handle files without matching diff sections', () => {
+      const files = [
+        { path: 'missing.ts', status: 'modified' as const, additions: 0, deletions: 0, diff: '' },
+      ];
+
+      const diffOutput = `diff --git a/other.ts b/other.ts
+index 1234567..abcdefg 100644
+--- a/other.ts
++++ b/other.ts
+@@ -1,1 +1,2 @@
+ line1
++line2`;
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (gitAnalyzer as any).calculateLineCounts(files, diffOutput);
+
+      expect(files[0].additions).toBe(0);
+      expect(files[0].deletions).toBe(0);
+    });
   });
 });
