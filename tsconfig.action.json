@@ -2,7 +2,8 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "outFile": "./dist/action.cjs"
   },
   "include": ["src/action.ts"]
 }

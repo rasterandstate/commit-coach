@@ -35,7 +35,7 @@ jobs:
       - name: Test action locally
         run: |
           # Test the action with a sample commit
-          node dist/action.js
+          node dist/action.cjs
         env:
           INPUT_GITHUB-TOKEN: ${{ secrets.GITHUB_TOKEN }}
           INPUT_CONFIG-PATH: '.commit-coach.yml'
