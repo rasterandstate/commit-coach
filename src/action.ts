@@ -12,6 +12,12 @@ async function main() {
   const comment = process.env.INPUT_COMMENT !== 'false';
   const statusCheck = process.env.INPUT_STATUS_CHECK !== 'false';
 
+  console.log('Debug - Input values:');
+  console.log('INPUT_COMMENT:', process.env.INPUT_COMMENT);
+  console.log('INPUT_STATUS_CHECK:', process.env.INPUT_STATUS_CHECK);
+  console.log('comment:', comment);
+  console.log('statusCheck:', statusCheck);
+
   if (!githubToken) {
     console.error('❌ GitHub token is required');
     console.error('Available environment variables:');
