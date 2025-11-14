@@ -47,7 +47,7 @@
   "author": "Stephen",
   "license": "MIT",
   "dependencies": {
-    "@octokit/rest": "^22.0.0",
+    "@octokit/rest": "^22.0.1",
     "chalk": "^5.6.2",
     "commander": "^14.0.2",
     "glob": "^11.0.3",
